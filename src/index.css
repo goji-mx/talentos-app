@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+ 
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-fade-out {
+    animation: fadeOut 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+}
+
+@font-face {
+  font-family: 'NimbusSanL';
+  src: url('./assets/fonts/NimbusSanL-Reg.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NimbusSanL';
+  src: url('./assets/fonts/NimbusSanL-RegIta.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'NimbusSanL';
+  src: url('./assets/fonts/NimbusSanL-Bol.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NimbusSanL';
+  src: url('./assets/fonts/NimbusSanL-BolIta.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+body {
+  font-family: 'NimbusSanL', sans-serif;
+}
