@@ -2,8 +2,6 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../components/Login';
 import Register from '../components/Register';
-import Dashboard from '../components/Dashborad';
-import Home from '../components/Home';
 import Administration from '../components/Administration/Administration';
 import UserManagement from '../components/Administration/UserManagement';
 import UnauthorizedPage from '../components/Security/UnauthorizedPage';
@@ -11,13 +9,20 @@ import ProtectedRoute from '../components/Security/ProtectedRoute';
 import { useAuth } from '../hooks/useAuth';
 import { getDefaultRouteForRole } from '../utils/auth';
 
+// Importar los nuevos dashboards específicos
+import AlumnoDashboard from '../components/Dashboards/AlumnoDashboard';
+import PadreDashboard from '../components/Dashboards/PadreDashboard';
+import ProfesorDashboard from '../components/Dashboards/ProfesorDashboard';
+import SecretariaDashboard from '../components/Dashboards/SecretariaDashboard';
+import DirectorDashboard from '../components/Dashboards/DirectorDashboard';
+
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, user, login, logout } = useAuth();
 
   // Componente para redirigir según el rol
   const RoleBasedRedirect = () => {
     if (!user) return <Navigate to="/" replace />;
-    const defaultRoute = getDefaultRouteForRole(user.userType);
+    const defaultRoute = getDefaultRouteForRole(user.userType, user.originalUserType);
     return <Navigate to={defaultRoute} replace />;
   };
 
@@ -36,28 +41,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       
-      {/* Rutas para estudiantes */}
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute allowedRoles={['student']}>
-            <Home onLogout={logout} />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Rutas para ventas */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute 
-            allowedRoles={['sales', 'admin']} 
-            fallbackRoute="/unauthorized"
-          >
-            <Dashboard onLogout={logout} />
-          </ProtectedRoute>
-        }
-      />
       
       {/* Rutas solo para administradores */}
       <Route
@@ -79,6 +62,73 @@ const AppRoutes: React.FC = () => {
             fallbackRoute="/unauthorized"
           >
             <UserManagement onLogout={logout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rutas específicas por tipo de usuario */}
+      
+      {/* Ruta para Secretaria */}
+      <Route
+        path="/secretaria"
+        element={
+          <ProtectedRoute 
+            allowedRoles={['admin']} 
+            fallbackRoute="/unauthorized"
+          >
+            <SecretariaDashboard onLogout={logout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Ruta para Director */}
+      <Route
+        path="/director"
+        element={
+          <ProtectedRoute 
+            allowedRoles={['admin']} 
+            fallbackRoute="/unauthorized"
+          >
+            <DirectorDashboard onLogout={logout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Ruta para Profesor */}
+      <Route
+        path="/profesor"
+        element={
+          <ProtectedRoute 
+            allowedRoles={['sales', 'admin']} 
+            fallbackRoute="/unauthorized"
+          >
+            <ProfesorDashboard onLogout={logout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Ruta para Padre */}
+      <Route
+        path="/padre"
+        element={
+          <ProtectedRoute 
+            allowedRoles={['student', 'admin']} 
+            fallbackRoute="/unauthorized"
+          >
+            <PadreDashboard onLogout={logout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Ruta para Alumno */}
+      <Route
+        path="/alumno"
+        element={
+          <ProtectedRoute 
+            allowedRoles={['student', 'admin']} 
+            fallbackRoute="/unauthorized"
+          >
+            <AlumnoDashboard onLogout={logout} />
           </ProtectedRoute>
         }
       />

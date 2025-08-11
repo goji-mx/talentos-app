@@ -7,8 +7,11 @@ export const isAuthenticated = (): boolean => {
 export interface DecodedToken {
   userId: string;
   userType: 'student' | 'admin' | 'sales';
+  originalUserType?: 'secretaria' | 'director' | 'profesor' | 'padre' | 'alumno' | 'admin';
+  nombre?: string;
+  correo?: string;
   exp: number;
-  iat: number;
+  iat?: number;
 }
 
 export const decodeToken = (token: string): DecodedToken | null => {
@@ -50,13 +53,26 @@ export const hasRole = (requiredRoles: string[]): boolean => {
   return requiredRoles.includes(user.userType);
 };
 
-export const getDefaultRouteForRole = (userType: string): string => {
+export const getDefaultRouteForRole = (userType: string, originalUserType?: string): string => {
   switch (userType) {
     case 'admin':
+      // Diferentes rutas según el tipo original de admin
+      if (originalUserType === 'secretaria') {
+        return '/secretaria';
+      }
+      if (originalUserType === 'director') {
+        return '/director';
+      }
       return '/admin';
     case 'sales':
-      return '/dashboard';
+      // Para profesores
+      return '/profesor';
     case 'student':
+      // Diferentes rutas para estudiantes y padres
+      if (originalUserType === 'padre') {
+        return '/padre';
+      }
+      return '/alumno';
     default:
       return '/home';
   }

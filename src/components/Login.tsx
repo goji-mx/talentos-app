@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, MessageSquare } from 'lucide-react';
 import Notification from './ui/Notificaciont';
-import BackgroundCircles from './BackgroundCircles';
-import FloatingInput from './ui/FloatingInput';
-import { useLoginPhone } from '../hooks/useLoginPhone';
+import { useLoginEmail } from '../hooks/useLoginEmail';
 import { useVerifyOtp } from '../hooks/useVerifyOtp';
 import talentos from "../assets/logos/talentos.png"
 import { gsap } from 'gsap';
+import { getUserFromToken, getDefaultRouteForRole } from '../utils/auth';
 
 const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
+  const [step, setStep] = useState<'email' | 'otp'>('email');
 
-  const { requestOtp, notif: notifPhone, setNotif: setNotifPhone } = useLoginPhone();
+  const { requestOtp, notif: notifEmail, setNotif: setNotifEmail } = useLoginEmail();
   const { verifyOtp, notif: notifOtp, setNotif: setNotifOtp } = useVerifyOtp();
 
   const navigate = useNavigate();
@@ -40,8 +39,8 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (step === 'phone') {
-      const success = await requestOtp(phone);
+    if (step === 'email') {
+      const success = await requestOtp(email);
       if (success) {
         // Animate step transition
         if (formRef.current) {
@@ -63,21 +62,30 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         }
       }
     } else {
-      const success = await verifyOtp(phone, otp);
+      const success = await verifyOtp(email, otp);
       if (success) {
-        if (formRef.current) {
-          gsap.to(formRef.current, {
-            opacity: 0,
-            y: -30,
-            scale: 0.95,
-            duration: 0.5,
-            ease: 'power2.in',
-            onComplete: () => {
-              onLogin();
-            },
-          });
-        } else {
-          onLogin();
+        // Call onLogin to update auth state
+        onLogin();
+        
+        // Get user data from token and navigate to appropriate dashboard
+        const userData = getUserFromToken();
+        if (userData) {
+          const defaultRoute = getDefaultRouteForRole(userData.userType, userData.originalUserType);
+          
+          if (formRef.current) {
+            gsap.to(formRef.current, {
+              opacity: 0,
+              y: -30,
+              scale: 0.95,
+              duration: 0.5,
+              ease: 'power2.in',
+              onComplete: () => {
+                navigate(defaultRoute);
+              },
+            });
+          } else {
+            navigate(defaultRoute);
+          }
         }
       }
 
@@ -92,7 +100,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         duration: 0.3,
         ease: 'power2.out',
         onComplete: () => {
-          setStep('phone');
+          setStep('email');
           setOtp('');
           gsap.fromTo(formRef.current,
             { opacity: 0, x: -20 },
@@ -101,13 +109,13 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         }
       });
     } else {
-      setStep('phone');
+      setStep('email');
       setOtp('');
     }
   };
 
-  const notif = notifPhone || notifOtp;
-  const setNotif = setNotifPhone || setNotifOtp;
+  const notif = notifEmail || notifOtp;
+  const setNotif = setNotifEmail || setNotifOtp;
 
   useEffect(() => {
     if (notif) {
@@ -139,26 +147,15 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center min-h-screen px-4 relative overflow-hidden">
-      {/* Enhanced gradient background */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'linear-gradient(135deg, rgb(140,159,233) 0%, rgb(63,79,192) 25%, rgb(19,24,111) 50%, rgb(63,79,192) 75%, rgb(140,159,233) 100%)'
-        }}
-      />
-
-      {/* Your existing BackgroundCircles component */}
-      <BackgroundCircles />
-
-      {/* Additional floating geometric shapes */}
-      <div className="absolute top-20 left-20 w-4 h-4 bg-white/20 rounded-full animate-pulse"></div>
-      <div className="absolute bottom-32 right-16 w-6 h-6 bg-white/15 rounded-full animate-bounce"></div>
-      <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-white/25 rounded-full animate-ping"></div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 to-purple-600"></div>
+      </div>
 
       {/* Notification */}
       {notif && (
-        <div className="absolute top-6 right-6 z-50 animate-in slide-in-from-top-2 duration-300">
+        <div className="fixed top-6 right-6 z-50 animate-in slide-in-from-top-2 duration-300">
           <Notification
             type={notif.type}
             message={notif.message}
@@ -167,121 +164,147 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         </div>
       )}
 
-      {/* Main form container */}
-      <div className="relative z-10 w-full max-w-md" ref={formRef}>
-        {/* Header section */}
+      {/* Main login container */}
+      <div className="w-full max-w-sm relative z-10" ref={formRef}>
+        {/* App icon and title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4 backdrop-blur-sm border border-white/30 shadow-lg">
-            {step === 'phone' ? (
-              <div className="flex items-center">
-                <img src={talentos} alt="Talentos Logo" className="w-10 h-10 bg-w" />
-              </div>
-            ) : (
-              <Shield className="w-8 h-8 text-blue-600" />
-            )}
+          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-2xl flex items-center justify-center transform transition-all duration-300 hover:scale-105">
+            <img src={talentos} alt="Talentos" className="w-12 h-12 rounded-lg" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
-            {step === 'phone' ? '¡Bienvenido a Talentos!' : 'Verificación'}
+          <h1 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
+            {step === 'email' ? 'Talentos' : 'Verificación'}
           </h1>
-          <p className="text-white/90 text-sm md:text-base drop-shadow-md">
-            {step === 'phone'
-              ? ''
-              : `Código enviado a ${phone}`}
+          <p className="text-gray-500 text-sm font-medium">
+            {step === 'email' 
+              ? 'Inicia sesión para continuar' 
+              : `Código enviado a ${email.slice(0, 3)}****@${email.split('@')[1]}`}
           </p>
         </div>
 
-        {/* Form card */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/20 shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {step === 'phone' ? (
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <FloatingInput
-                    id="phone"
-                    label="Ingresa tu número de teléfono"
-                    name="phone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
+        {/* Login form */}
+        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            {step === 'email' ? (
+              <>
+                {/* Email input */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-semibold text-gray-700 block">
+                    Correo electrónico
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <MessageSquare className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-0 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="ejemplo@correo.com"
+                      autoComplete="email"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Ingresa tu correo electrónico registrado
+                  </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                {/* Action buttons */}
+                <div className="space-y-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:shadow-none disabled:transform-none"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      Continuar
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </button>
+                  
                   <button
                     type="button"
                     onClick={goToRegister}
-                    className="
-                      flex-1 bg-white/10 border border-white/30 text-white py-3 px-4 
-                      rounded-xl hover:bg-white/20 transition-all duration-300 
-                      transform hover:scale-105 hover:shadow-lg
-                      backdrop-blur-sm font-medium
-                    "
+                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    Registrarse
+                    ¿No tienes cuenta? Regístrate
                   </button>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* OTP input */}
+                <div className="space-y-2">
+                  <label htmlFor="otp" className="text-sm font-semibold text-gray-700 block">
+                    Código de verificación
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <MessageSquare className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      id="otp"
+                      type="text"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-0 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white text-center text-lg font-mono tracking-widest"
+                      placeholder="000000"
+                      maxLength={6}
+                      autoComplete="one-time-code"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Ingresa el código de 6 dígitos que enviamos
+                  </p>
+                </div>
 
+                {/* Action buttons */}
+                <div className="space-y-3 pt-2">
                   <button
                     type="submit"
-                    className="
-                      flex-1 bg-white text-purple-700 py-3 px-4 rounded-xl 
-                      hover:bg-gray-100 transition-all duration-300 transform 
-                      hover:scale-105 hover:shadow-lg font-semibold
-                      flex items-center justify-center gap-2
-                    "
+                    disabled={otp.length !== 6}
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:shadow-none disabled:transform-none"
                   >
-                    Solicitar código
-                    <ArrowRight className="w-4 h-4" />
+                    <span className="flex items-center justify-center gap-2">
+                      Verificar
+                      <Check className="w-4 h-4" />
+                    </span>
                   </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <FloatingInput
-                    id="otp"
-                    label="Ingresa el código"
-                    name="otp"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                  />
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
+                  
                   <button
                     type="button"
                     onClick={handleBack}
-                    className="
-                      flex-1 bg-white/10 border border-white/30 text-white py-3 px-4 
-                      rounded-xl hover:bg-white/20 transition-all duration-300 
-                      transform hover:scale-105 hover:shadow-lg
-                      backdrop-blur-sm flex items-center justify-center gap-2 font-medium
-                    "
+                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     <ArrowLeft className="w-4 h-4" />
-                    Atrás
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="
-                      flex-1 bg-white text-purple-700 py-3 px-4 rounded-xl 
-                      hover:bg-gray-100 transition-all duration-300 transform 
-                      hover:scale-105 hover:shadow-lg font-semibold
-                      flex items-center justify-center gap-2
-                    "
-                  >
-                    Ingresar
-                    <Check className="w-4 h-4" />
+                    Cambiar correo
                   </button>
                 </div>
-              </div>
+
+                {/* Resend code option */}
+                <div className="text-center pt-4 border-t border-gray-100">
+                  <p className="text-sm text-gray-500 mb-2">¿No recibiste el código?</p>
+                  <button
+                    type="button"
+                    className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200"
+                    onClick={() => requestOtp(email)}
+                  >
+                    Reenviar código
+                  </button>
+                </div>
+              </>
             )}
           </form>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-white/70 text-sm drop-shadow-sm">
-            ¿Necesitas ayuda? <button className="text-white hover:underline font-medium">Contáctanos</button>
+        {/* Footer help text */}
+        <div className="text-center mt-8">
+          <p className="text-gray-400 text-sm">
+            ¿Necesitas ayuda?{' '}
+            <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
+              Contáctanos
+            </button>
           </p>
         </div>
       </div>

@@ -6,26 +6,30 @@ export const useVerifyOtp = () => {
   const [loading, setLoading] = useState(false);
   const [notif, setNotif] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  const verifyOtp = async (phone: string, otp: string): Promise<boolean> => {
+  const verifyOtp = async (email: string, otp: string): Promise<boolean> => {
     setLoading(true);
     try {
-      const response = await fetch(`${config.backend.DB_HOST}/verify-otp`, {
+      const response = await fetch(`${config.backend.DB_HOST}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, otp }),
+        body: JSON.stringify({ email, otp }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setNotif({ message: data.message || 'OTP incorrecto.', type: 'error' });
+        setNotif({ message: data.result || 'OTP incorrecto.', type: 'error' });
         return false;
       }
 
-      localStorage.setItem('token', data.token);
+      // Guardar token JWT en localStorage
+      if (data.result && data.result.token) {
+        localStorage.setItem('token', data.result.token);
+      }
       setNotif({ message: 'Inicio de sesión exitoso.', type: 'success' });
       return true;
     } catch (error) {
+      console.error('Error verifying OTP:', error);
       setNotif({ message: 'Error de red al verificar código.', type: 'error' });
       return false;
     } finally {

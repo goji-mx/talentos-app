@@ -12,6 +12,23 @@
     animation: fadeOut 0.3s ease-in-out;
   }
 
+  /* Modal animations */
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .animate-fadeOut {
+    animation: fadeOut 0.3s ease-in;
+  }
+
+  .animate-slideOut {
+    animation: slideOut 0.3s cubic-bezier(0.7, 0, 0.84, 0);
+  }
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -31,6 +48,28 @@
     to {
       opacity: 0;
       transform: translateY(-10px);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-16px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-16px) scale(0.95);
     }
   }
 }
