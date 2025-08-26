@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, Check, MessageSquare } from 'lucide-react';
 import Notification from './ui/Notificaciont';
 import { useLoginEmail } from '../hooks/useLoginEmail';
 import { useVerifyOtp } from '../hooks/useVerifyOtp';
+import { useUser } from '../utils/UserContext';
 import talentos from "../assets/logos/talentos.png"
 import { gsap } from 'gsap';
 import { getUserFromToken, getDefaultRouteForRole } from '../utils/auth';
@@ -15,6 +16,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
 
   const { requestOtp, notif: notifEmail, setNotif: setNotifEmail } = useLoginEmail();
   const { verifyOtp, notif: notifOtp, setNotif: setNotifOtp } = useVerifyOtp();
+  const { setUserData } = useUser(); // Obtener la función para actualizar el contexto
 
   const navigate = useNavigate();
   const formRef = useRef<HTMLDivElement | null>(null);
@@ -67,9 +69,17 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         // Call onLogin to update auth state
         onLogin();
         
-        // Get user data from token and navigate to appropriate dashboard
+        // Get user data from token and update context
         const userData = getUserFromToken();
         if (userData) {
+          // Actualizar el contexto con los datos del usuario
+          setUserData({
+            nombre: userData.nombre || '',
+            email: userData.correo || '', // Provide a default value if email is missing
+            userType: userData.userType,
+            originalUserType: userData.originalUserType || '',
+          });
+          
           const defaultRoute = getDefaultRouteForRole(userData.userType, userData.originalUserType);
           
           if (formRef.current) {
@@ -88,7 +98,6 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
           }
         }
       }
-
     }
   };
 

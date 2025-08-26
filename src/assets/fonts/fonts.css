@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'YoungSerif';
+    src: url('./YoungSerif-Regular.ttf') format('truetype'),
+         url('./YoungSerif-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
