@@ -1,18 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/Card'
+import { Input } from './ui/Input'
+import { Button } from './ui/Button'
+import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Check, MessageSquare } from 'lucide-react';
+import { EyeOff, Eye, Lock, Sparkles,
+  Mail,
+  Target,
+  AlertCircle,
+ } from 'lucide-react';
 import Notification from './ui/Notificaciont';
 import { useLoginEmail } from '../hooks/useLoginEmail';
 import { useVerifyOtp } from '../hooks/useVerifyOtp';
 import { useUser } from '../utils/UserContext';
-import talentos from "../assets/logos/talentos.png"
 import { gsap } from 'gsap';
 import { getUserFromToken, getDefaultRouteForRole } from '../utils/auth';
 
 const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [otp] = useState('');
   const [step, setStep] = useState<'email' | 'otp'>('email');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading] = useState(false);
 
   const { requestOtp, notif: notifEmail, setNotif: setNotifEmail } = useLoginEmail();
   const { verifyOtp, notif: notifOtp, setNotif: setNotifOtp } = useVerifyOtp();
@@ -21,20 +32,26 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const navigate = useNavigate();
   const formRef = useRef<HTMLDivElement | null>(null);
 
-  const goToRegister = () => {
-    if (formRef.current) {
-      gsap.to(formRef.current, {
-        opacity: 0,
-        y: -30,
-        scale: 0.95,
-        duration: 0.5,
-        ease: 'power2.in',
-        onComplete: () => {
-          navigate('/register');
-        },
-      });
-    } else {
-      navigate('/register');
+  // const goToRegister = () => {
+  //   if (formRef.current) {
+  //     gsap.to(formRef.current, {
+  //       opacity: 0,
+  //       y: -30,
+  //       scale: 0.95,
+  //       duration: 0.5,
+  //       ease: 'power2.in',
+  //       onComplete: () => {
+  //         navigate('/register');
+  //       },
+  //     });
+  //   } else {
+  //     navigate('/register');
+  //   }
+  // };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e as any);
     }
   };
 
@@ -101,26 +118,30 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     }
   };
 
-  const handleBack = () => {
-    if (formRef.current) {
-      gsap.to(formRef.current, {
-        opacity: 0,
-        x: 20,
-        duration: 0.3,
-        ease: 'power2.out',
-        onComplete: () => {
-          setStep('email');
-          setOtp('');
-          gsap.fromTo(formRef.current,
-            { opacity: 0, x: -20 },
-            { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out' }
-          );
-        }
-      });
-    } else {
-      setStep('email');
-      setOtp('');
-    }
+  // const handleBack = () => {
+  //   if (formRef.current) {
+  //     gsap.to(formRef.current, {
+  //       opacity: 0,
+  //       x: 20,
+  //       duration: 0.3,
+  //       ease: 'power2.out',
+  //       onComplete: () => {
+  //         setStep('email');
+  //         setOtp('');
+  //         gsap.fromTo(formRef.current,
+  //           { opacity: 0, x: -20 },
+  //           { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out' }
+  //         );
+  //       }
+  //     });
+  //   } else {
+  //     setStep('email');
+  //     setOtp('');
+  //   }
+  // };
+
+  const handleForgotPassword = () => {
+    setError('Funcionalidad de recuperación de contraseña próximamente disponible.');
   };
 
   const notif = notifEmail || notifOtp;
@@ -155,12 +176,187 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     }
   }, []);
 
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 to-purple-600"></div>
+    <div className="min-h-screen bg-[rgba(250,234,186,1)] flex items-center justify-center p-6 border-b-4 border-neutral-black">
+      {/* Floating decorative elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, delay: 0 }}
+          className="absolute top-20 left-10 text-4xl opacity-20"
+        >
+          🎯
+        </motion.div>
+        <motion.div
+          animate={{ y: [0, -15, 0], rotate: [0, -10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, delay: 1 }}
+          className="absolute top-32 right-20 text-3xl opacity-20"
+        >
+          ⭐
+        </motion.div>
+        <motion.div
+          animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
+          transition={{ duration: 3, repeat: Infinity, delay: 2 }}
+          className="absolute bottom-40 left-20 text-3xl opacity-20"
+        >
+          🚀
+        </motion.div>
+        <motion.div
+          animate={{ y: [0, -25, 0], rotate: [0, -15, 0] }}
+          transition={{ duration: 6, repeat: Infinity, delay: 3 }}
+          className="absolute bottom-20 right-10 text-4xl opacity-20"
+        >
+          💎
+        </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+        className="w-full max-w-5xl relative z-10"
+      >
+        {/* Main header with MOVA branding */}
+        <div className="text-center mb-8">
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 4, repeat: Infinity }}
+            className="mb-6"
+          >
+            <div className="w-20 h-20 rounded-2xl bg-teen-electric flex items-center justify-center mx-auto shadow-xl">
+              <Sparkles className="w-10 h-10 text-white" />
+            </div>
+          </motion.div>
+          
+          {/* MOVA App Name */}
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, type: "spring" }}
+            className="text-6xl md:text-7xl text-neutral-black mb-2"
+            style={{ fontFamily: 'Young Serif, serif' }}
+          >
+            möva
+          </motion.h1>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mb-4"
+          >
+            <p className="text-2xl md:text-3xl text-neutral-black mb-2" style={{ fontFamily: 'Young Serif, serif' }}>
+              Descubre tu mejor versión
+            </p>
+            <p className="text-lg text-neutral-black/80" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              Plataforma de descubrimiento de talentos para adolescentes
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Login Form - Centered */}
+        <div className="flex justify-center mb-12">
+          <Card className="shadow-mova bg-white/95 backdrop-blur-sm w-full max-w-md">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl text-teen-charcoal">Iniciar Sesión</CardTitle>
+              <p className="text-teen-charcoal/70">Ingresa tus credenciales</p>
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
+              {/* Email Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-teen-charcoal">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 w-5 h-5 text-teen-charcoal/50" />
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="tu-email@ejemplo.com"
+                    className="pl-10 h-12 border-2 border-input focus:border-teen-electric bg-white/80 text-teen-charcoal"
+                  />
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-teen-charcoal">Contraseña</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 w-5 h-5 text-teen-charcoal/50" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="••••••••"
+                    className="pl-10 pr-10 h-12 border-2 border-input focus:border-teen-electric bg-white/80 text-teen-charcoal"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-teen-charcoal/50 hover:text-teen-charcoal"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Forgot Password Link */}
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={isLoading}
+                  className="text-teen-electric hover:text-teen-neon-pink transition-colors text-sm font-medium"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-teen-neon-pink/10 text-teen-neon-pink rounded-lg p-3 text-sm flex items-center gap-2"
+                >
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  {error}
+                </motion.div>
+              )}
+
+              {/* Login Button - With bottom border and black text */}
+              <Button
+                onClick={handleSubmit}
+                disabled={isLoading}
+                variant="teen"
+                size="xl"
+                className="w-full font-bold py-4 rounded-2xl text-lg shadow-mova hover:shadow-mova-strong transition-all mova-sticker-bordered text-neutral-black"
+              >
+                {isLoading ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 mr-3"
+                    >
+                      <Target className="w-5 h-5" />
+                    </motion.div>
+                    Iniciando sesión...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-3" />
+                    Iniciar Sesión
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
 
       {/* Notification */}
       {notif && (
@@ -172,151 +368,6 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
           />
         </div>
       )}
-
-      {/* Main login container */}
-      <div className="w-full max-w-sm relative z-10" ref={formRef}>
-        {/* App icon and title */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-2xl flex items-center justify-center transform transition-all duration-300 hover:scale-105">
-            <img src={talentos} alt="Talentos" className="w-12 h-12 rounded-lg" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
-            {step === 'email' ? 'Talentos' : 'Verificación'}
-          </h1>
-          <p className="text-gray-500 text-sm font-medium">
-            {step === 'email' 
-              ? 'Inicia sesión para continuar' 
-              : `Código enviado a ${email.slice(0, 3)}****@${email.split('@')[1]}`}
-          </p>
-        </div>
-
-        {/* Login form */}
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
-            {step === 'email' ? (
-              <>
-                {/* Email input */}
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-semibold text-gray-700 block">
-                    Correo electrónico
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <MessageSquare className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-0 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white"
-                      placeholder="ejemplo@correo.com"
-                      autoComplete="email"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ingresa tu correo electrónico registrado
-                  </p>
-                </div>
-
-                {/* Action buttons */}
-                <div className="space-y-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:shadow-none disabled:transform-none"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      Continuar
-                      <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </button>
-                  
-                  <button
-                    type="button"
-                    onClick={goToRegister}
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    ¿No tienes cuenta? Regístrate
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* OTP input */}
-                <div className="space-y-2">
-                  <label htmlFor="otp" className="text-sm font-semibold text-gray-700 block">
-                    Código de verificación
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <MessageSquare className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="otp"
-                      type="text"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-0 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white text-center text-lg font-mono tracking-widest"
-                      placeholder="000000"
-                      maxLength={6}
-                      autoComplete="one-time-code"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ingresa el código de 6 dígitos que enviamos
-                  </p>
-                </div>
-
-                {/* Action buttons */}
-                <div className="space-y-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={otp.length !== 6}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:shadow-none disabled:transform-none"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      Verificar
-                      <Check className="w-4 h-4" />
-                    </span>
-                  </button>
-                  
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    Cambiar correo
-                  </button>
-                </div>
-
-                {/* Resend code option */}
-                <div className="text-center pt-4 border-t border-gray-100">
-                  <p className="text-sm text-gray-500 mb-2">¿No recibiste el código?</p>
-                  <button
-                    type="button"
-                    className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200"
-                    onClick={() => requestOtp(email)}
-                  >
-                    Reenviar código
-                  </button>
-                </div>
-              </>
-            )}
-          </form>
-        </div>
-
-        {/* Footer help text */}
-        <div className="text-center mt-8">
-          <p className="text-gray-400 text-sm">
-            ¿Necesitas ayuda?{' '}
-            <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
-              Contáctanos
-            </button>
-          </p>
-        </div>
-      </div>
     </div>
   );
 };

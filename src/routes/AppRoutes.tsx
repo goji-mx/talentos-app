@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import WelcomePage from '../components/WelcomePage'
 import Login from '../components/Login';
 import Register from '../components/Register';
 import Administration from '../components/Administration/Administration';
@@ -15,6 +16,7 @@ import PadreDashboard from '../components/Dashboards/PadreDashboard';
 import ProfesorDashboard from '../components/Dashboards/ProfesorDashboard';
 import SecretariaDashboard from '../components/Dashboards/SecretariaDashboard';
 import DirectorDashboard from '../components/Dashboards/DirectorDashboard';
+import OnboardingScreen from '../components/Onboarding/OnboardingPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, user, login, logout } = useAuth();
@@ -40,6 +42,8 @@ const AppRoutes: React.FC = () => {
       />
       <Route path="/register" element={<Register />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      <Route path="/welcome" element={<WelcomePage />} />
+      <Route path="/onboarding" element={<OnboardingScreen onComplete={() => { console.log("Completado"); }} />} />
       
       
       {/* Rutas solo para administradores */}

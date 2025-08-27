@@ -1,8 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Young+Serif&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 @import './assets/fonts/fonts.css';
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
+@theme inline {
+  /* CSS Custom Properties for Tailwind - Nueva Paleta MOVA */
+  --color-neutral-black: #101828;
+  --color-neutral-gray-dark: #344054;
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-gray-50: #F9FAFB;
+  --color-neutral-gray-medium: #98A2B3;
+  
+  /* Nueva Paleta MOVA */
+  --color-mova-turquoise-light: #C5EAE8;
+  --color-mova-turquoise-medium: #9ED5DF;
+  --color-mova-lime-light: #B0F18F;
+  --color-mova-cream: #F7E7BB;
+  --color-mova-salmon: #E6B2A2;
+  --color-mova-pink: #FFBEDD;
+  --color-mova-coral: #FF969A;
+  --color-mova-lime: #EBFC63;
+  
+  /* Teen colors mapped to MOVA palette */
+  --color-teen-ice: var(--color-mova-turquoise-light);
+  --color-teen-charcoal: var(--color-neutral-black);
+  --color-teen-electric: var(--color-mova-turquoise-medium);
+  --color-teen-neon-pink: var(--color-mova-coral);
+  --color-teen-citrus: var(--color-mova-salmon);
+  --color-teen-sunshine: var(--color-mova-lime);
+  --color-teen-orange: var(--color-mova-salmon);
+  
+
+  
+  /* System colors mapped to new MOVA palette */
+  --color-primary: var(--color-mova-lime);
+  --color-primary-foreground: var(--color-neutral-black);
+  --color-background: var(--color-neutral-white);
+  --color-foreground: var(--color-neutral-black);
+  --color-card: var(--color-neutral-white);
+  --color-card-foreground: var(--color-neutral-black);
+  --color-popover: var(--color-neutral-white);
+  --color-popover-foreground: var(--color-neutral-black);
+  --color-secondary: var(--color-mova-turquoise-light);
+  --color-secondary-foreground: var(--color-neutral-black);
+  --color-muted: var(--color-mova-cream);
+  --color-muted-foreground: var(--color-neutral-gray-medium);
+  --color-accent: var(--color-mova-coral);
+  --color-accent-foreground: var(--color-neutral-white);
+  --color-destructive: var(--color-mova-coral);
+  --color-destructive-foreground: var(--color-neutral-white);
+  --color-border: var(--color-mova-turquoise-medium);
+  --color-input: var(--color-neutral-white);
+  --color-input-background: var(--color-mova-turquoise-light);
+  --color-ring: var(--color-mova-lime);
+  --color-success: var(--color-mova-lime-light);
+  --color-success-foreground: var(--color-neutral-black);
+  --color-warning: var(--color-mova-salmon);
+  --color-warning-foreground: var(--color-neutral-black);
+  --color-chart-1: var(--color-mova-lime);
+  --color-chart-2: var(--color-mova-turquoise-medium);
+  --color-chart-3: var(--color-mova-coral);
+  --color-chart-4: var(--color-mova-salmon);
+  --color-chart-5: var(--color-mova-pink);
+  
+  --radius-sm: calc(0.5rem - 4px);
+  --radius-md: calc(0.5rem - 2px);
+  --radius-lg: 0.5rem;
+  --radius-xl: calc(0.5rem + 4px);
+}
+
+:root {
+  --font-size: 14px;
+  
+  /* Nueva Paleta de Colores MOVA - Especificación Actualizada */
+  
+  /* Primary MOVA Colors */
+  --color-mova-turquoise-light: #C5EAE8;   /* Turquesa claro */
+  --color-mova-turquoise-medium: #9ED5DF;  /* Turquesa medio */
+  --color-mova-lime-light: #B0F18F;        /* Verde lima claro */
+  --color-mova-cream: #F7E7BB;             /* Crema/beige */
+  --color-mova-salmon: #E6B2A2;            /* Rosa salmón */
+  --color-mova-pink: #FFBEDD;              /* Rosa claro */
+  --color-mova-coral: #FF969A;             /* Coral/rosa vibrante */
+  --color-mova-lime: #EBFC63;              /* Verde lima vibrante (signature) */
+  
+  /* System colors using MOVA palette */
+  --color-primary: var(--color-mova-lime);           /* Verde lima como primary */
+  --color-secondary: var(--color-mova-turquoise-light); /* Turquesa como secondary */
+  --color-accent: var(--color-mova-coral);           /* Coral como accent */
+  
+  /* Neutral colors - Mantenemos para contraste */
+  --color-neutral-black: #101828;          /* Negro profundo */
+  --color-neutral-gray-dark: #344054;      /* Gris oscuro */
+  --color-neutral-white: #FFFFFF;          /* Blanco */
+  --color-neutral-gray-50: #F9FAFB;        /* Gris muy claro */
+  --color-neutral-gray-medium: #98A2B3;    /* Gris medio */
+  
+  /* Teen colors mapped to MOVA palette for compatibility */
+  --color-teen-ice: var(--color-mova-turquoise-light);      /* Turquesa claro */
+  --color-teen-charcoal: var(--color-neutral-black);        /* Negro profundo */
+  --color-teen-electric: var(--color-mova-turquoise-medium); /* Turquesa medio */
+  --color-teen-neon-pink: var(--color-mova-coral);          /* Coral */
+  --color-teen-citrus: var(--color-mova-salmon);            /* Salmón */
+  --color-teen-sunshine: var(--color-mova-lime);            /* Verde lima */
+  --color-teen-orange: var(--color-mova-salmon);            /* Salmón */
+  
+  /* Reduced extended colors - solo los necesarios para el sistema */
+  
+  /* System colors using new MOVA palette */
+  --primary: var(--color-mova-lime);
+  --primary-foreground: var(--color-neutral-black);
+  --background: var(--color-neutral-white);
+  --foreground: var(--color-neutral-black);
+  --card: var(--color-neutral-white);
+  --card-foreground: var(--color-neutral-black);
+  --popover: var(--color-neutral-white);
+  --popover-foreground: var(--color-neutral-black);
+  --secondary: var(--color-mova-turquoise-light);
+  --secondary-foreground: var(--color-neutral-black);
+  --muted: var(--color-mova-cream);
+  --muted-foreground: var(--color-neutral-gray-medium);
+  --accent: var(--color-mova-coral);
+  --accent-foreground: var(--color-neutral-white);
+  --destructive: var(--color-mova-coral);
+  --destructive-foreground: var(--color-neutral-white);
+  --border: var(--color-mova-turquoise-medium);
+  --input: var(--color-neutral-white);
+  --input-background: var(--color-mova-turquoise-light);
+  --ring: var(--color-mova-lime);
+  --success: var(--color-mova-lime-light);
+  --success-foreground: var(--color-neutral-black);
+  --warning: var(--color-mova-salmon);
+  --warning-foreground: var(--color-neutral-black);
+  
+  /* Chart colors using MOVA palette */
+  --chart-1: var(--color-mova-lime);
+  --chart-2: var(--color-mova-turquoise-medium);
+  --chart-3: var(--color-mova-coral);
+  --chart-4: var(--color-mova-salmon);
+  --chart-5: var(--color-mova-pink);
+  
+  --radius: 0.5rem;
+  
+  /* Font definitions - Nueva especificación MOVA */
+  --font-heading: 'Young Serif', serif;                    /* Para títulos, frases y textos destacados */
+  --font-body: 'Montserrat', sans-serif;                   /* Para cuerpos de texto */
+  --font-display: 'Young Serif', serif;                    /* Para headings especiales */
+}
  
 @layer utilities {
   .animate-fade-in {
@@ -105,4 +252,181 @@
 
 body {
   font-family: 'NimbusSanL', sans-serif;
+}
+
+@layer base {
+  /* Typography using new MOVA font system */
+  h1, .text-h1 {
+    font-family: var(--font-display); /* Young Serif */
+    font-size: 2.25rem;
+    font-weight: 400; /* Young Serif solo tiene peso 400 */
+    line-height: 1.2;
+    color: var(--color-neutral-black);
+  }
+
+  h2, .text-h2 {
+    font-family: var(--font-display); /* Young Serif */
+    font-size: 1.875rem;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--color-neutral-black);
+  }
+
+  h3, .text-h3 {
+    font-family: var(--font-heading); /* Young Serif */
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-neutral-black);
+  }
+
+  h4, .text-h4 {
+    font-family: var(--font-heading); /* Young Serif */
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-neutral-black);
+  }
+
+  h5, .text-h5 {
+    font-family: var(--font-heading); /* Young Serif */
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-neutral-black);
+  }
+
+  h6, .text-h6 {
+    font-family: var(--font-heading); /* Young Serif */
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-neutral-black);
+  }
+
+  p, .text-body {
+    font-family: var(--font-body); /* Montserrat */
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-neutral-black);
+  }
+
+  .text-body-sm {
+    font-family: var(--font-body); /* Montserrat */
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-neutral-black);
+  }
+
+  .text-body-lg {
+    font-family: var(--font-body); /* Montserrat */
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--color-neutral-black);
+  }
+
+  .text-xs {
+    font-family: var(--font-body); /* Montserrat */
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--color-neutral-black);
+  }
+
+  .text-sm {
+    font-family: var(--font-body); /* Montserrat */
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--color-neutral-black);
+  }
+
+  /* Clean button typography with Montserrat */
+  button, .btn {
+    font-family: var(--font-body); /* Montserrat */
+    font-weight: 500;
+    color: var(--color-neutral-black);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Maintain shadow for sticker effect */
+    transition: all 0.2s ease;
+  }
+
+  button:hover, .btn:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-1px);
+  }
+
+  /* Input typography with Montserrat */
+  input, textarea, select {
+    font-family: var(--font-body); /* Montserrat */
+    font-weight: 400;
+  }
+
+  /* Label typography with Montserrat */
+  label {
+    font-family: var(--font-body); /* Montserrat */
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--color-neutral-gray-dark);
+  }
+}
+
+/* MOVA sticker style - Enhanced WITHOUT black borders */
+.mova-sticker {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.mova-sticker:hover {
+  transform: scale(1.05) translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Button sticker style - Standard for all buttons WITHOUT BORDERS */
+.btn-sticker {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.btn-sticker:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.btn-sticker:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* MOVA sticker style WITH 1px borders and 4px bottom border - like the reference image */
+.mova-sticker-bordered {
+  border: 1px solid var(--color-neutral-black);
+  border-bottom: 4px solid var(--color-neutral-black);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.mova-sticker-bordered:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.mova-sticker-bordered:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Card sticker style WITH 1px borders and 4px bottom border */
+.card-sticker-bordered {
+  border: 1px solid var(--color-neutral-black);
+  border-bottom: 4px solid var(--color-neutral-black);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.card-sticker-bordered:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
 }
