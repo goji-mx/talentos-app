@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 import { 
   Target, 
@@ -115,8 +114,19 @@ function StepZeroVisual() {
             transition: { duration: 0.3 }
           }}
           transition={{ 
-            initial: { delay: index * 0.2, duration: 0.6, type: "spring" },
-            animate: { duration: 3, repeat: Infinity, delay: index * 0.4 }
+            delay: index * 0.2, 
+            duration: 0.6, 
+            type: "spring",
+            y: {
+              duration: 3, 
+              repeat: Infinity, 
+              delay: index * 0.4
+            },
+            rotateZ: {
+              duration: 3, 
+              repeat: Infinity, 
+              delay: index * 0.4
+            }
           }}
           className="p-3 md:p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl mova-sticker-bordered cursor-pointer relative overflow-hidden"
         >
@@ -226,13 +236,23 @@ function StepTwoVisual() {
             rotate: -10
           }}
           transition={{ 
-            initial: { 
-              delay: index * 0.15, 
-              duration: 0.6, 
-              type: "spring",
-              bounce: 0.6
+            delay: index * 0.15, 
+            duration: 0.6, 
+            type: "spring",
+            bounce: 0.6,
+            scale: {
+              duration: 2 + index * 0.2, 
+              repeat: Infinity, 
+              delay: index * 0.3,
+              ease: "easeInOut"
             },
-            animate: { 
+            rotate: {
+              duration: 2 + index * 0.2, 
+              repeat: Infinity, 
+              delay: index * 0.3,
+              ease: "easeInOut"
+            },
+            y: {
               duration: 2 + index * 0.2, 
               repeat: Infinity, 
               delay: index * 0.3,
@@ -281,8 +301,14 @@ function StepThreeVisual() {
         rotate: 0
       }}
       transition={{ 
-        initial: { duration: 0.8, type: "spring", bounce: 0.6 },
-        animate: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+        duration: 0.8, 
+        type: "spring", 
+        bounce: 0.6,
+        scale: {
+          duration: 3, 
+          repeat: Infinity, 
+          ease: "easeInOut"
+        }
       }}
       className="relative"
     >

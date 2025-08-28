@@ -21,13 +21,13 @@ interface Director {
   activo: boolean;
 }
 
-interface Escuela {
-  _id: string;
-  nombre: string;
-  municipio: string;
-  clave: string;
-  tieneDirector: boolean;
-}
+// interface Escuela {
+//   _id: string;
+//   nombre: string;
+//   municipio: string;
+//   clave: string;
+//   tieneDirector: boolean;
+// }
 
 interface DirectorManagementProps {
   secretariaId?: string;
@@ -65,7 +65,7 @@ const DirectorManagement: React.FC<DirectorManagementProps> = ({ secretariaId })
   // Hooks para API calls
   const { directors, loading: directorsLoading, error: directorsError, refetch: refetchDirectors } = useDirectors(secretariaId);
   const { createDirector, loading: createLoading, error: createError } = useCreateDirector();
-  const { escuelas, loading: escuelasLoading, error: escuelasError } = useEscuelas();
+  const { escuelas, loading: escuelasLoading } = useEscuelas();
   const { assignSchool, loading: assignLoading, error: assignError } = useAssignSchool();
 
   // Filter directors based on search term
