@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Settings, BarChart3, FileText, Calendar, LogOut } from 'lucide-react';
+import { Users, Settings, BarChart3, LogOut, School, GraduationCap, TriangleAlert, ChartPie, UserPlus } from 'lucide-react';
 import { useUser } from '../../utils/UserContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,12 +29,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     const navigate = useNavigate();
     const menuItems: MenuItem[] = [
         { id: 'dashboard', label: 'Inicio', icon: BarChart3 },
-        { id: 'schools', label: 'Escuelas', icon: Users },
-        { id: 'teachers', label: 'Profesores', icon: FileText },
-        { id: 'students', label: 'Estudiantes', icon: Calendar },
-        { id: 'protocol', label: 'Protocolo de Riesgo', icon: Calendar },
-        { id: 'analytics', label: 'Analítica', icon: Calendar },
-        { id: 'register', label: 'Registro', icon: Calendar }
+        { id: 'schools', label: 'Escuelas', icon: School },
+        { id: 'teachers', label: 'Profesores', icon: GraduationCap },
+        { id: 'students', label: 'Estudiantes', icon: Users },
+        { id: 'protocol', label: 'Protocolo de Riesgo', icon: TriangleAlert },
+        { id: 'analytics', label: 'Analítica', icon: ChartPie },
+        { id: 'register', label: 'Registro', icon: UserPlus }
     ];
 
     const handleItemClick = (itemId: string) => {
@@ -134,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <div className="border-t border-gray-200 p-6 space-y-2">
                     <button
                         onClick={onSettings}
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        className="w-full flex items-center shadow-md shadow-black gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     >
                         <Settings className="w-5 h-5 text-gray-500" />
                         <span className="text-sm">Configuración</span>
@@ -142,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        className="w-full flex items-center shadow-md shadow-black gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-red-600 hover:bg-red-50 hover:text-red-700"
                     >
                         <LogOut className="w-5 h-5" />
                         <span className="text-sm">Cerrar sesión</span>

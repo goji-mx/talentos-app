@@ -1,12 +1,121 @@
 import React, { useState } from 'react';
+import { BarChart, Bar, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../../hooks/useAuth';
 import DirectorManagement from '../Administration/DirectorManagement';
 import Sidebar from '../ui/SideBar';
-import { Users, FileText, Calendar, Phone, Mail, Clock, UserCheck, AlertCircle, Menu } from 'lucide-react';
+import SchoolManagement from '../Secretaria/schoolManagement'; // Ajusta la ruta según tu estructura
+import { Users, Menu, GraduationCap, Building2, TriangleAlert, BarChart3, Trophy, TrendingDown, BookOpen, Activity, Clock } from 'lucide-react';
 
 interface SecretariaDashboardProps {
   onLogout: () => void;
 }
+
+// Datos de ejemplo mejorados (los reemplazarías con datos de tu API)
+const weeklyLoginData = [
+  { day: 'LUN', logins: 280, activeUsers: 245 },
+  { day: 'MAR', logins: 320, activeUsers: 290 },
+  { day: 'MIE', logins: 250, activeUsers: 220 },
+  { day: 'JUE', logins: 300, activeUsers: 275 },
+  { day: 'VIE', logins: 350, activeUsers: 320 },
+  { day: 'SAB', logins: 180, activeUsers: 160 },
+  { day: 'DOM', logins: 120, activeUsers: 100 },
+];
+
+const PercentageRing = ({ percentage, size = 60 }: { percentage: number; size?: number }) => {
+  const radius = (size - 8) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDasharray = circumference;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="none"
+          className="text-gray-200"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="none"
+          strokeDasharray={strokeDasharray}
+          strokeDashoffset={strokeDashoffset}
+          className="text-lime-300 transition-all duration-300 ease-in-out"
+          strokeLinecap="round"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg font-bold text-gray-900">{percentage}%</span>
+      </div>
+    </div>
+  );
+};
+
+// Componente mejorado para la gráfica semanal usando Recharts
+const WeeklyLoginChart = () => {
+  return (
+    <ResponsiveContainer width="100%" height={120}>
+      <BarChart data={weeklyLoginData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+        <Bar dataKey="logins" fill="#3B82F6" radius={[2, 2, 0, 0]} />
+        <Tooltip
+          content={({ active, payload, label }) => {
+            if (active && payload && payload.length) {
+              return (
+                <div className="bg-white p-2 border rounded shadow-lg">
+                  <p className="font-medium text-sm">{`${label}: ${payload[0].value} inicios`}</p>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
+// Componente mejorado para talentos
+const TopTalents = () => {
+  const talents = [
+    { name: 'Matemáticas', icon: '📊', count: 245 },
+    { name: 'Ciencias', icon: '🧪', count: 198 },
+    { name: 'Arte', icon: '🎨', count: 167 },
+    { name: 'Deportes', icon: '⚽', count: 134 },
+    { name: 'Música', icon: '🎵', count: 89 },
+  ];
+
+  const maxCount = Math.max(...talents.map(t => t.count));
+
+  return (
+    <div className="space-y-4">
+      {talents.map((talent, index) => (
+        <div key={index} className="flex items-center gap-3">
+          <span className="text-lg">{talent.icon}</span>
+          <div className="flex-1">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-sm font-medium text-gray-900">{talent.name}</span>
+              <span className="text-xs text-gray-600">{talent.count}</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(talent.count / maxCount) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const SecretariaDashboard: React.FC<SecretariaDashboardProps> = () => {
   const { user } = useAuth();
@@ -19,7 +128,6 @@ const SecretariaDashboard: React.FC<SecretariaDashboardProps> = () => {
 
   return (
     <div className="relative flex min-h-screen bg-gradient-to-br from-gray-100 via-white to-purple-50">
-      {/* Sidebar */}
       <button
         onClick={() => setSidebarOpen(true)}
         className="p-3 lg:hidden fixed top-4 left-4 z-50 bg-white rounded-full shadow"
@@ -37,368 +145,150 @@ const SecretariaDashboard: React.FC<SecretariaDashboardProps> = () => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64 p-6">
-
+      <div className="flex-1 lg:ml-64 ">
         {/* Main Content */}
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <main className="mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            {activeSection === 'directores' ? (
+            {activeSection === 'schools' ? (
+              /* School Management Section */
+              <div className="animate-fadeIn">
+                <SchoolManagement secretariaId={user?.userId} />
+              </div>
+            ) : activeSection === 'directores' ? (
               /* Director Management Section */
               <div className="animate-fadeIn">
                 <DirectorManagement secretariaId={user?.userId} />
               </div>
             ) : (
               /* Dashboard Section */
-              <div className="animate-fadeIn">
-                <>
-                  {/* Welcome Section */}
-                  <div className="bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg shadow-lg p-6 text-white mb-8">
-                    <h2 className="text-3xl font-bold mb-2">
-                      Buenos días, {user?.nombre} 👩‍💼
-                    </h2>
-                    <p className="text-pink-100">
-                      Centro de administración escolar. Gestiona estudiantes, comunicaciones y procesos administrativos.
-                    </p>
+              <div className="animate-fadeIn space-y-8">
+                {/* Tarjetas de estadísticas principales */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+                  <button className="bg-cyan-100 border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-6">
+                      <Users className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <span className="text-xl font-bold text-gray-900">1,230</span>
+                        <p className="text-xs font-medium text-gray-600">Total de alumnos</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button className="bg-red-300 border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-6">
+                      <GraduationCap className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <span className="text-xl font-bold text-gray-900">45</span>
+                        <p className="text-xs font-medium text-gray-600">Total de profesores</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button className="bg-lime-300 border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-6">
+                      <Building2 className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <span className="text-xl font-bold text-gray-900">3</span>
+                        <p className="text-xs font-medium text-gray-600">Total de escuelas</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button className="bg-pink-300 border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-2 p-6">
+                      <PercentageRing percentage={80} />
+                      <p className="text-xs font-medium text-gray-600 text-center">Bienestar emocional</p>
+                    </div>
+                  </button>
+
+                  <button className="bg-amber-100 border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-6">
+                      <TriangleAlert className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <span className="text-xl font-bold text-gray-900">3</span>
+                        <p className="text-xs font-medium text-gray-600">Alumnos en riesgo</p>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Gráficas principales mejoradas */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-lg shadow-md shadow-black p-6 border">
+                    <div className="flex items-center gap-3 mb-4">
+                      <BarChart3 className="h-6 w-6 text-blue-600" />
+                      <h3 className="text-lg font-bold text-gray-900">Inicios de sesión por semana</h3>
+                    </div>
+                    <WeeklyLoginChart />
                   </div>
 
-                  {/* Quick Actions */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <button className="bg-white rounded-lg shadow p-4 text-center hover:bg-gray-50 transition-colors">
-                      <UserCheck className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-gray-900">Registrar Estudiante</p>
-                    </button>
-                    <button className="bg-white rounded-lg shadow p-4 text-center hover:bg-gray-50 transition-colors">
-                      <FileText className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-gray-900">Generar Constancia</p>
-                    </button>
-                    <button className="bg-white rounded-lg shadow p-4 text-center hover:bg-gray-50 transition-colors">
-                      <Phone className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-gray-900">Contactar Padre</p>
-                    </button>
-                    <button className="bg-white rounded-lg shadow p-4 text-center hover:bg-gray-50 transition-colors">
-                      <Calendar className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-gray-900">Programar Cita</p>
-                    </button>
+                  <div className="bg-white rounded-lg shadow-md shadow-black p-6 border">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Trophy className="h-6 w-6 text-yellow-600" />
+                      <h3 className="text-lg font-bold text-gray-900">Top Talentos en tu institución</h3>
+                    </div>
+                    <TopTalents />
                   </div>
+                </div>
 
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-lg shadow p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <Users className="h-8 w-8 text-blue-600" />
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Estudiantes Activos
-                            </dt>
-                            <dd className="text-lg font-medium text-gray-900">1,247</dd>
-                          </dl>
+                {/* Tarjetas de estadísticas secundarias */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <button className="bg-white border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-4">
+                      <Users className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <p className="text-xs font-medium text-gray-600">Cuentas creadas</p>
+                        <span className="text-xl font-bold text-gray-900">1,230</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button className="bg-white border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-4">
+                      <TrendingDown className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <p className="text-xs font-medium text-gray-600">Inicios de sesión</p>
+                        <span className="text-xl font-bold text-gray-900">3,280</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button className="bg-white border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-4">
+                      <BookOpen className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <p className="text-xs font-medium text-gray-600">Talentos identificados</p>
+                        <span className="text-xl font-bold text-gray-900">1000</span>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Tarjetas de MÖVA */}
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
+                  <button className="bg-white border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors">
+                    <h5 className='flex-shrink-0 flex'>Interacciones con MÖVA</h5>
+                    <div className=' flex items-center justify-center'>
+                      <div className="flex items-center gap-4 w-full p-4">
+                        <Activity className="h-8 w-8 flex-shrink-0" />
+                        <div className="flex flex-col items-start">
+                          <p className="text-xs font-medium text-gray-600">Promedio con mejora</p>
+                          <span className="text-xl font-bold text-gray-900">200</span>
                         </div>
                       </div>
                     </div>
+                  </button>
 
-                    <div className="bg-white rounded-lg shadow p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <FileText className="h-8 w-8 text-green-600" />
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Documentos Pendientes
-                            </dt>
-                            <dd className="text-lg font-medium text-gray-900">15</dd>
-                          </dl>
-                        </div>
+                  <button className="bg-white border rounded-lg shadow-md shadow-black p-6 hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-4 w-full p-4">
+                      <Clock className="h-8 w-8 flex-shrink-0" />
+                      <div className="flex flex-col items-start">
+                        <p className="text-xs font-medium text-gray-600">Tiempo promedio dentro de MÖVA</p>
+                        <span className="text-xl font-bold text-gray-900">45 min</span>
                       </div>
                     </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <Phone className="h-8 w-8 text-purple-600" />
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Llamadas Hoy
-                            </dt>
-                            <dd className="text-lg font-medium text-gray-900">23</dd>
-                          </dl>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <Calendar className="h-8 w-8 text-orange-600" />
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Citas Programadas
-                            </dt>
-                            <dd className="text-lg font-medium text-gray-900">8</dd>
-                          </dl>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Main Dashboard Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column */}
-                    <div className="lg:col-span-2 space-y-6">
-                      {/* Tareas Pendientes */}
-                      <div className="bg-white rounded-lg shadow">
-                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                          <h3 className="text-lg font-semibold text-gray-900">Tareas Prioritarias</h3>
-                          <span className="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">5 urgentes</span>
-                        </div>
-                        <div className="p-6">
-                          <div className="space-y-4">
-                            {[
-                              {
-                                task: 'Procesar inscripciones nuevas',
-                                count: 12,
-                                deadline: 'Hoy 3:00 PM',
-                                priority: 'high',
-                                type: 'enrollment'
-                              },
-                              {
-                                task: 'Generar constancias de estudio',
-                                count: 8,
-                                deadline: 'Mañana',
-                                priority: 'medium',
-                                type: 'documents'
-                              },
-                              {
-                                task: 'Contactar padres - faltas',
-                                count: 5,
-                                deadline: 'Hoy 5:00 PM',
-                                priority: 'high',
-                                type: 'communication'
-                              },
-                              {
-                                task: 'Actualizar expedientes',
-                                count: 20,
-                                deadline: 'Esta semana',
-                                priority: 'low',
-                                type: 'records'
-                              }
-                            ].map((item, index) => (
-                              <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                                <div className="flex items-center">
-                                  <div className={`w-3 h-3 rounded-full mr-3 ${item.priority === 'high' ? 'bg-red-500' :
-                                    item.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                                    }`}></div>
-                                  <div>
-                                    <p className="font-medium text-gray-900">{item.task}</p>
-                                    <div className="flex items-center mt-1">
-                                      <Clock className="h-4 w-4 text-gray-400 mr-1" />
-                                      <span className="text-sm text-gray-600">{item.deadline}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">
-                                  {item.count}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Comunicaciones Recientes */}
-                      <div className="bg-white rounded-lg shadow">
-                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                          <h3 className="text-lg font-semibold text-gray-900">Comunicaciones del Día</h3>
-                          <button className="text-sm text-blue-600 hover:text-blue-800">Ver todas</button>
-                        </div>
-                        <div className="p-6">
-                          <div className="space-y-4">
-                            {[
-                              {
-                                type: 'call',
-                                contact: 'Sra. María González',
-                                student: 'Ana González - 2° B',
-                                reason: 'Consulta sobre calificaciones',
-                                time: '10:30 AM',
-                                status: 'completed'
-                              },
-                              {
-                                type: 'email',
-                                contact: 'Prof. Carlos Ruiz',
-                                student: 'Solicitud de documentos',
-                                reason: 'Constancia de estudios',
-                                time: '11:45 AM',
-                                status: 'pending'
-                              },
-                              {
-                                type: 'meeting',
-                                contact: 'Sr. José Pérez',
-                                student: 'Luis Pérez - 3° A',
-                                reason: 'Reunión disciplinaria',
-                                time: '2:00 PM',
-                                status: 'scheduled'
-                              }
-                            ].map((comm, index) => (
-                              <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                                <div className="flex-shrink-0 mr-3">
-                                  {comm.type === 'call' && <Phone className="h-5 w-5 text-green-600" />}
-                                  {comm.type === 'email' && <Mail className="h-5 w-5 text-blue-600" />}
-                                  {comm.type === 'meeting' && <Calendar className="h-5 w-5 text-purple-600" />}
-                                </div>
-                                <div className="flex-1">
-                                  <p className="font-medium text-gray-900">{comm.contact}</p>
-                                  <p className="text-sm text-gray-600">{comm.student}</p>
-                                  <p className="text-xs text-gray-500 mt-1">{comm.reason}</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-sm text-gray-600">{comm.time}</p>
-                                  <span className={`text-xs px-2 py-1 rounded-full ${comm.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                    comm.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-blue-100 text-blue-800'
-                                    }`}>
-                                    {comm.status === 'completed' ? 'Completado' :
-                                      comm.status === 'pending' ? 'Pendiente' : 'Programado'}
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="space-y-6">
-                      {/* Agenda del Día */}
-                      <div className="bg-white rounded-lg shadow">
-                        <div className="px-6 py-4 border-b border-gray-200">
-                          <h3 className="text-lg font-semibold text-gray-900">Agenda de Hoy</h3>
-                        </div>
-                        <div className="p-6">
-                          <div className="space-y-3">
-                            {[
-                              {
-                                time: '9:00 AM',
-                                event: 'Reunión directiva',
-                                type: 'meeting',
-                                status: 'completed'
-                              },
-                              {
-                                time: '11:00 AM',
-                                event: 'Atención a padres',
-                                type: 'service',
-                                status: 'current'
-                              },
-                              {
-                                time: '2:00 PM',
-                                event: 'Cita Sr. Pérez',
-                                type: 'appointment',
-                                status: 'scheduled'
-                              },
-                              {
-                                time: '4:00 PM',
-                                event: 'Procesamiento documentos',
-                                type: 'admin',
-                                status: 'scheduled'
-                              }
-                            ].map((item, index) => (
-                              <div key={index} className={`p-3 rounded-lg border-l-4 ${item.status === 'current' ? 'border-blue-400 bg-blue-50' :
-                                item.status === 'completed' ? 'border-green-400 bg-green-50' :
-                                  'border-gray-300 bg-gray-50'
-                                }`}>
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <p className="font-medium text-gray-900">{item.event}</p>
-                                    <p className="text-sm text-gray-600">{item.time}</p>
-                                  </div>
-                                  {item.status === 'current' && (
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Alertas y Notificaciones */}
-                      <div className="bg-white rounded-lg shadow">
-                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                          <h3 className="text-lg font-semibold text-gray-900">Alertas</h3>
-                          <AlertCircle className="h-5 w-5 text-red-500" />
-                        </div>
-                        <div className="p-6">
-                          <div className="space-y-3">
-                            {[
-                              {
-                                type: 'urgent',
-                                message: 'Expediente de Juan Martínez requiere documentos',
-                                time: '30 min'
-                              },
-                              {
-                                type: 'reminder',
-                                message: 'Recordatorio: Reunión con directora a las 3:00 PM',
-                                time: '2 horas'
-                              },
-                              {
-                                type: 'system',
-                                message: 'Sistema de calificaciones actualizado',
-                                time: '1 día'
-                              }
-                            ].map((alert, index) => (
-                              <div key={index} className={`p-3 rounded-lg ${alert.type === 'urgent' ? 'bg-red-50 border border-red-200' :
-                                alert.type === 'reminder' ? 'bg-yellow-50 border border-yellow-200' :
-                                  'bg-blue-50 border border-blue-200'
-                                }`}>
-                                <p className={`text-sm font-medium ${alert.type === 'urgent' ? 'text-red-800' :
-                                  alert.type === 'reminder' ? 'text-yellow-800' :
-                                    'text-blue-800'
-                                  }`}>
-                                  {alert.message}
-                                </p>
-                                <p className="text-xs text-gray-500 mt-1">Hace {alert.time}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Estadísticas Rápidas */}
-                      <div className="bg-white rounded-lg shadow">
-                        <div className="px-6 py-4 border-b border-gray-200">
-                          <h3 className="text-lg font-semibold text-gray-900">Resumen Semanal</h3>
-                        </div>
-                        <div className="p-6">
-                          <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Estudiantes procesados</span>
-                              <span className="text-sm font-semibold text-gray-900">142</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Documentos generados</span>
-                              <span className="text-sm font-semibold text-gray-900">67</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Llamadas realizadas</span>
-                              <span className="text-sm font-semibold text-gray-900">89</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Citas programadas</span>
-                              <span className="text-sm font-semibold text-green-600">↗ 24</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
+                  </button>
+                </div>
               </div>
             )}
           </div>
