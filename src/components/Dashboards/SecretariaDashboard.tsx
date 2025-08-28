@@ -3,7 +3,7 @@ import { BarChart, Bar, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../../hooks/useAuth';
 import DirectorManagement from '../Administration/DirectorManagement';
 import Sidebar from '../ui/SideBar';
-import SchoolManagement from '../Secretaria/schoolManagement'; // Ajusta la ruta según tu estructura
+import SchoolManagement from '../Secretaria/SchoolManagement'; // Ajusta la ruta según tu estructura
 import { Users, Menu, GraduationCap, Building2, TriangleAlert, BarChart3, Trophy, TrendingDown, BookOpen, Activity, Clock } from 'lucide-react';
 
 interface SecretariaDashboardProps {
