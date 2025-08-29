@@ -23,15 +23,16 @@ const AppRoutes: React.FC = () => {
 
   // Componente para redirigir según el rol
   const RoleBasedRedirect = () => {
-    if (!user) return <Navigate to="/" replace />;
+    if (!user) return <Navigate to="/login" replace />;
     const defaultRoute = getDefaultRouteForRole(user.userType, user.originalUserType);
     return <Navigate to={defaultRoute} replace />;
   };
 
   return (
     <Routes>
+      <Route path="/" element={<WelcomePage />} />
       <Route
-        path="/"
+        path="/login"
         element={
           isAuthenticated ? (
             <RoleBasedRedirect />
@@ -42,7 +43,6 @@ const AppRoutes: React.FC = () => {
       />
       <Route path="/register" element={<Register />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
-      <Route path="/welcome" element={<WelcomePage />} />
       <Route path="/onboarding" element={<OnboardingScreen onComplete={() => { console.log("Completado"); }} />} />
       
       

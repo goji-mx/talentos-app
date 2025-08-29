@@ -459,7 +459,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
             onClick={handlePrev}
             variant="outline"
             size="lg"
-            className="flex items-center gap-2 px-3 py-2 md:px-6 md:py-3 rounded-xl mova-sticker-bordered bg-white text-neutral-gray-dark hover:bg-neutral-gray-50 hover:text-neutral-gray-dark"
+            className="flex items-center gap-2 px-3 py-2 md:px-6 md:py-3 rounded-xl mova-sticker-bordered bg-white text-neutral-gray-dark hover:bg-neutral-gray-50 hover:text-neutral-gray-dark hover:cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
             <span className="hidden sm:inline">
@@ -488,7 +488,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
           <Button
             onClick={handleNext}
             size="lg"
-            className={`flex items-center gap-2 px-3 py-2 md:px-6 md:py-3 rounded-xl shadow-xl transform hover:scale-105 transition-all mova-sticker-bordered ${
+            className={`flex items-center gap-2 px-3 py-2 md:px-6 md:py-3 rounded-xl shadow-xl transform hover:scale-105 transition-all mova-sticker-bordered hover:cursor-pointer ${
               currentStep === steps.length - 1
                 ? 'bg-gradient-to-r from-mova-lime to-mova-lime-light hover:from-mova-lime-light hover:to-mova-lime text-neutral-black'
                 : 'bg-gradient-to-r from-mova-coral to-mova-pink hover:from-mova-pink hover:to-mova-coral text-white'

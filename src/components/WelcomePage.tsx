@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const MovaLanding: React.FC = () => {
   const navigate = useNavigate();
   const onGetStarted = () => {
-    navigate('/');
+    navigate('/login');
   };
 
   return (
@@ -62,7 +62,7 @@ const MovaLanding: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto hover:cursor-pointer"
           >
             
             {/* Tarjeta 1 - Reta a tus talentos */}
@@ -117,7 +117,7 @@ const MovaLanding: React.FC = () => {
           >
             <Button
               onClick={onGetStarted}
-              className="px-8 py-3 rounded-full shadow-mova hover:shadow-mova-strong transition-all duration-300 hover:scale-105 text-lg font-medium mova-sticker-bordered"
+              className="px-8 py-3 rounded-full shadow-mova hover:shadow-mova-strong transition-all duration-300 hover:scale-105 text-lg font-medium mova-sticker-bordered hover:cursor-pointer"
               style={{ backgroundColor: '#ebfc63', color: '#101828' }}
             >
               <span style={{ fontFamily: "'Montserrat', sans-serif" }}>Empezar</span>

@@ -56,6 +56,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    navigate('/onboarding');
     e.preventDefault();
 
     if (step === 'email') {
@@ -333,7 +334,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                 disabled={isLoading}
                 variant="teen"
                 size="xl"
-                className="w-full font-bold py-4 rounded-2xl text-lg shadow-mova hover:shadow-mova-strong transition-all mova-sticker-bordered text-neutral-black"
+                className="w-full font-bold py-4 rounded-2xl text-lg shadow-mova hover:shadow-mova-strong transition-all mova-sticker-bordered text-neutral-black hover:cursor-pointer"
               >
                 {isLoading ? (
                   <>
